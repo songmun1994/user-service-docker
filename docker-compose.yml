@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  spring-app:
+    build: .
+    container_name: study-app
+    restart: unless-stopped
+    ports:
+      - "18080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://110.11.191.24:13306/userdb?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: userapp
+      SPRING_DATASOURCE_PASSWORD: 1234
+    networks:
+      - common-network
+
+networks:
+  common-network:
+    external: true
