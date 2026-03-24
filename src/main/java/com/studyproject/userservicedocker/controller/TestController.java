@@ -8,6 +8,6 @@ public class TestController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "hello v1 - webhook test";
+        return "hello v2 - webhook test";
     }
 }
