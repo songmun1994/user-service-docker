@@ -8,7 +8,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Git에서 코드를 가져오는 단계
                 checkout scm
             }
         }
@@ -20,8 +19,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                // 테스트 코드 실행
-                sh './gradlew test'
+                sh './gradlew test -i'
             }
         }
     }
