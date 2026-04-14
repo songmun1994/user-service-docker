@@ -12,6 +12,11 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+                steps {
+                    cleanWs() // 워크스페이스를 깨끗하게 비워줍니다.
+                }
+        }
         stage('Checkout') {
             steps {
                 checkout scm
