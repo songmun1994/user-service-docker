@@ -10,15 +10,20 @@ pipeline {
         IMAGE_NAME = 'user-service-docker'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
         PROJECT_NAME = "user-docker-service"
+        // 1.0.14 같은 형식으로 저장됩니다.
         VERSION = "1.0.${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Clean Workspace') {
-                steps {
-                    cleanWs() // 워크스페이스를 깨끗하게 비워줍니다.
+        stage('Initialize & Clean') {
+            steps {
+                cleanWs()
+                script {
+                    currentBuild.displayName = "${env.PROJECT_NAME}_v${env.VERSION}"
                 }
+            }
         }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -40,19 +45,19 @@ pipeline {
 
         stage('Docker Image Build') {
             steps {
-                echo "Building Docker Image: ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                sh "docker build -t ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${env.BUILD_NUMBER} ."
-                sh "docker tag ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${env.BUILD_NUMBER} ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:latest"
+                echo "Building Docker Image: ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:${env.VERSION}"
+                sh "docker build -t ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:${env.VERSION} ."
+                sh "docker tag ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:${env.VERSION} ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:latest"
             }
         }
 
         stage('Docker Push') {
             steps {
                 echo "Pushing Image to Docker Hub..."
-                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                withCredentials([usernamePassword(credentialsId: "${env.DOCKERHUB_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                     sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin"
-                    sh "docker push ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:${env.BUILD_NUMBER}"
-                    sh "docker push ${DOCKERHUB_USERNAME}/${IMAGE_NAME}:latest"
+                    sh "docker push ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:${env.VERSION}"
+                    sh "docker push ${env.DOCKERHUB_USERNAME}/${env.IMAGE_NAME}:latest"
                 }
             }
         }
