@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+            PROJECT_NAME = "user-docker-service"
+            VERSION = "1.0.${env.BUILD_NUMBER}" // 빌드 번호를 버전에 포함
+    }
 
     tools {
         jdk 'Java17'
