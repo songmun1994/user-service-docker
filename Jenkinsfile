@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-            PROJECT_NAME = "user-docker-service"
-            VERSION = "1.0.${env.BUILD_NUMBER}" // 빌드 번호를 버전에 포함
-    }
 
     tools {
         jdk 'Java17'
@@ -13,6 +9,8 @@ pipeline {
         DOCKERHUB_USERNAME = 'munhyeoksong'
         IMAGE_NAME = 'user-service-docker'
         DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
+        PROJECT_NAME = "user-docker-service"
+        VERSION = "1.0.${env.BUILD_NUMBER}"
     }
 
     stages {
